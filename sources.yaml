@@ -1,0 +1,28 @@
+# ニュースソースの設定ファイル。
+# 新しいAPIを追加するときは sources/ に1ファイル追加し、ここに登録するだけでよい。
+
+sources:
+  nasa_apod:
+    enabled: true
+    module: sources.nasa
+    api_key: DEMO_KEY   # 本番運用するなら api.nasa.gov で無料キーを取得して差し替え推奨
+
+  stock:
+    enabled: true
+    module: sources.stock
+    tickers:
+      - symbol: "^N225"
+        label: "日経平均"
+        news_query: "日経平均"
+      - symbol: "^GSPC"
+        label: "S&P500"
+        news_query: "S&P500 株価"
+
+  # 例: 追加予定のソース(未実装)
+  # police:
+  #   enabled: false
+  #   module: sources.police
+  # realestate:
+  #   enabled: false
+  #   module: sources.realestate
+  #   api_key: ""
