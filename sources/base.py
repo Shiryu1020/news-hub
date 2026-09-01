@@ -55,7 +55,7 @@ def fetch_all(sources_config: dict) -> list[Item]:
         if not cfg.get("enabled", False):
             continue
         module = load_source_module(cfg["module"])
-        label = getattr(module, "SOURCE_NAME", source_id)
+        label = cfg.get("label") or getattr(module, "SOURCE_NAME", source_id)
         try:
             fetched = module.fetch(cfg)
         except Exception as e:  # noqa: BLE001

@@ -3,9 +3,9 @@
 
 sources:
   nasa_apod:
-    enabled: true
+    enabled: false       # 不要なため無効化(sources/nasa.py は残置)
     module: sources.nasa
-    api_key: DEMO_KEY   # 本番運用するなら api.nasa.gov で無料キーを取得して差し替え推奨
+    api_key: DEMO_KEY
 
   stock:
     enabled: true
@@ -17,6 +17,32 @@ sources:
       - symbol: "^GSPC"
         label: "S&P500"
         news_query: "S&P500 株価"
+
+  biz_strategy:
+    enabled: true
+    module: sources.rss
+    label: "経営・戦略"
+    limit_per_feed: 5
+    feeds:
+      - http://feeds.hbr.org/harvardbusiness           # Harvard Business Review
+      - https://www.mckinsey.com/insights/rss           # McKinsey Insights
+
+  macro_geopolitics:
+    enabled: true
+    module: sources.rss
+    label: "地政学・マクロ経済"
+    limit_per_feed: 5
+    feeds:
+      - https://www.project-syndicate.org/rss           # Project Syndicate
+      - https://www.foreignaffairs.com/rss.xml           # Foreign Affairs
+
+  jp_business:
+    enabled: true
+    module: sources.rss
+    label: "日本語ビジネスニュース"
+    limit_per_feed: 6
+    feeds:
+      - http://toyokeizai.net/list/feed/rss              # 東洋経済オンライン
 
   # 例: 追加予定のソース(未実装)
   # police:
