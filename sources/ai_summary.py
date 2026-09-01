@@ -13,7 +13,7 @@ import time
 
 import requests
 
-_MODEL = "gemini-3.6-flash"
+_MODEL = "gemini-flash-lite-latest"  # 無料枠のクォータに余裕がある軽量モデル
 _API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{_MODEL}:generateContent"
 
 
