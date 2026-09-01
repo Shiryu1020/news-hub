@@ -10,21 +10,32 @@
   <header class="site-header">
     <div class="header-inner">
       <h1>My News Hub<span class="dot">.</span></h1>
-      <p class="updated">最終更新 {{ generated_at.strftime('%m/%d %H:%M') }} UTC</p>
+      <div class="updated-row">
+        <p class="updated">最終更新 {{ generated_at.strftime('%m/%d %H:%M') }} UTC</p>
+        <button id="reload-btn" class="icon-btn" title="最新版を再取得(キャッシュを避けて再読み込み)" aria-label="再読み込み">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+            <polyline points="21 3 21 9 15 9" />
+          </svg>
+        </button>
+      </div>
     </div>
     <nav class="tabs">
       <button class="tab active" data-filter="all">すべて</button>
       {% for c in categories %}
-      <button class="tab" data-filter="{{ c.id }}">{{ c.label }}</button>
+      <button class="tab" data-filter="{{ c.id }}">{{ c.icon }} {{ c.label }}</button>
       {% endfor %}
     </nav>
   </header>
 
   {% macro render_card(item) %}
   <article class="card" data-source="{{ item.source }}">
+    {% if item.image_url and item.metrics.chart_points is not defined %}
+    <img src="{{ item.image_url }}" alt="" class="card-thumb" loading="lazy">
+    {% endif %}
     <div class="card-body">
       <div class="card-top">
-        <span class="badge">{{ item.source_label }}</span>
+        <span class="badge">{{ item.icon }} {{ item.source_label }}</span>
         <span class="date">{{ item.published_at|time_ago }}</span>
       </div>
       <h2><a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a></h2>
@@ -37,6 +48,13 @@
           {{ '▲' if change >= 0 else '▼' }} {{ '%+.2f'|format(change) }}%
         </span>
       </div>
+      {% endif %}
+
+      {% if item.metrics.chart_points %}
+      <svg class="chart {{ item.metrics.chart_trend }}" viewBox="0 0 100 32" preserveAspectRatio="none">
+        <polyline points="{{ item.metrics.chart_points }}" fill="none" stroke-width="2" />
+      </svg>
+      <p class="chart-caption">直近3ヶ月</p>
       {% endif %}
 
       {% if item.summary %}
@@ -75,7 +93,7 @@
       <img src="{{ hero.image_url }}" alt="" class="hero-image">
       {% endif %}
       <div class="hero-body">
-        <span class="badge">{{ hero.source_label }}</span>
+        <span class="badge">{{ hero.icon }} {{ hero.source_label }}</span>
         <h2>{{ hero.title }}</h2>
         {% if hero.summary %}
         <p class="hero-summary">{{ hero.summary[:140] }}{{ '…' if hero.summary|length > 140 else '' }}</p>
@@ -97,6 +115,11 @@
   </footer>
 
   <script>
+    document.getElementById('reload-btn').addEventListener('click', (e) => {
+      e.currentTarget.classList.add('spinning');
+      location.href = location.pathname + '?t=' + Date.now();
+    });
+
     const tabs = document.querySelectorAll('.tab');
     const cards = document.querySelectorAll('[data-source]');
     tabs.forEach(tab => {

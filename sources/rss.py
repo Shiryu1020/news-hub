@@ -38,6 +38,24 @@ def _clean_summary(entry, max_len: int = 160) -> str:
     return text[:max_len] + ("…" if len(text) > max_len else "")
 
 
+def _extract_image(entry) -> str | None:
+    """フィードにサムネイル画像があれば拾う(無ければ None、見出しのみでOK)。"""
+    for thumb in entry.get("media_thumbnail", []) or []:
+        if thumb.get("url"):
+            return thumb["url"]
+    for media in entry.get("media_content", []) or []:
+        medium = media.get("medium", "")
+        mtype = media.get("type", "")
+        if media.get("url") and (medium == "image" or mtype.startswith("image")):
+            return media["url"]
+    for link in entry.get("links", []) or []:
+        if link.get("type", "").startswith("image") and link.get("href"):
+            return link["href"]
+    html = entry.get("summary", "") or entry.get("description", "") or ""
+    m = re.search(r'<img[^>]+src="([^"]+)"', html)
+    return m.group(1) if m else None
+
+
 def fetch(config: dict) -> list[Item]:
     limit_per_feed = config.get("limit_per_feed", 5)
     items: list[Item] = []
@@ -51,6 +69,7 @@ def fetch(config: dict) -> list[Item]:
                     url=entry.get("link", ""),
                     published_at=_parse_published(entry),
                     summary=_clean_summary(entry),
+                    image_url=_extract_image(entry),
                 )
             )
     return items

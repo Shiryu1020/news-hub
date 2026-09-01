@@ -10,6 +10,7 @@ sources:
   stock:
     enabled: true
     module: sources.stock
+    icon: "📈"
     tickers:
       - symbol: "^N225"
         label: "日経平均"
@@ -22,6 +23,7 @@ sources:
     enabled: true
     module: sources.rss
     label: "経営・戦略"
+    icon: "💼"
     limit_per_feed: 5
     feeds:
       - http://feeds.hbr.org/harvardbusiness           # Harvard Business Review
@@ -31,6 +33,7 @@ sources:
     enabled: true
     module: sources.rss
     label: "地政学・マクロ経済"
+    icon: "🌍"
     limit_per_feed: 5
     feeds:
       - https://www.project-syndicate.org/rss           # Project Syndicate
@@ -40,6 +43,7 @@ sources:
     enabled: true
     module: sources.rss
     label: "日本語ビジネスニュース"
+    icon: "🗞️"
     limit_per_feed: 6
     feeds:
       - http://toyokeizai.net/list/feed/rss              # 東洋経済オンライン

@@ -58,7 +58,7 @@ def main() -> None:
     for i in items:
         if i.source not in seen:
             seen.add(i.source)
-            categories.append({"id": i.source, "label": i.source_label})
+            categories.append({"id": i.source, "label": i.source_label, "icon": i.icon})
 
     env = Environment(loader=FileSystemLoader(str(ROOT / "templates")))
     env.filters["time_ago"] = time_ago

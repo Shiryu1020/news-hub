@@ -30,11 +30,13 @@ class Item:
     metrics: dict[str, Any] = field(default_factory=dict)       # 定量データ (例: {"price": 2700, "change_pct": -1.8})
     related_links: list[RelatedLink] = field(default_factory=list)  # 定性的な補足情報(関連ニュース見出し等)
     source_label: str = ""          # 表示用ソース名 (例: "株価")。fetch_all が自動で埋める
+    icon: str = ""                  # 表示用アイコン絵文字 (例: "📈")。fetch_all が自動で埋める
 
     def to_dict(self) -> dict:
         return {
             "source": self.source,
             "source_label": self.source_label,
+            "icon": self.icon,
             "title": self.title,
             "url": self.url,
             "published_at": self.published_at.isoformat(),
@@ -56,6 +58,7 @@ def fetch_all(sources_config: dict) -> list[Item]:
             continue
         module = load_source_module(cfg["module"])
         label = cfg.get("label") or getattr(module, "SOURCE_NAME", source_id)
+        icon = cfg.get("icon", "")
         try:
             fetched = module.fetch(cfg)
         except Exception as e:  # noqa: BLE001
@@ -64,6 +67,7 @@ def fetch_all(sources_config: dict) -> list[Item]:
         for item in fetched:
             item.source = source_id
             item.source_label = label
+            item.icon = icon
         items.extend(fetched)
     items.sort(key=lambda i: i.published_at, reverse=True)
     return items

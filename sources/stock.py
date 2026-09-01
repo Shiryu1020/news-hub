@@ -20,6 +20,24 @@ from .base import Item, RelatedLink
 
 SOURCE_NAME = "株価"
 
+_CHART_WIDTH = 100
+_CHART_HEIGHT = 32
+
+
+def _sparkline_points(closes: list[float]) -> str:
+    """3ヶ月分の終値を SVG viewBox (0 0 100 32) 上の折れ線座標に変換する。"""
+    if len(closes) < 2:
+        return ""
+    lo, hi = min(closes), max(closes)
+    span = hi - lo or 1.0
+    n = len(closes)
+    points = []
+    for i, c in enumerate(closes):
+        x = i / (n - 1) * _CHART_WIDTH
+        y = _CHART_HEIGHT - (c - lo) / span * _CHART_HEIGHT
+        points.append(f"{x:.1f},{y:.1f}")
+    return " ".join(points)
+
 
 def _fetch_related_news(query: str, limit: int = 5) -> list[RelatedLink]:
     rss_url = f"https://news.google.com/rss/search?q={quote(query)}&hl=ja&gl=JP&ceid=JP:ja"
@@ -50,6 +68,11 @@ def fetch(config: dict) -> list[Item]:
             else 0.0
         )
 
+        hist_3mo = ticker.history(period="3mo").dropna(subset=["Close"])
+        closes_3mo = [float(c) for c in hist_3mo["Close"].tolist()]
+        chart_points = _sparkline_points(closes_3mo)
+        chart_trend = "up" if (closes_3mo and closes_3mo[-1] >= closes_3mo[0]) else "down"
+
         related_links = _fetch_related_news(news_query)
         headlines = [l.title for l in related_links]
         summary = summarize_price_move(label, change_pct, headlines) or (
@@ -67,6 +90,8 @@ def fetch(config: dict) -> list[Item]:
                     "close": round(float(latest["Close"]), 2),
                     "change_pct": round(float(change_pct), 2),
                     "volume": int(latest["Volume"]),
+                    "chart_points": chart_points,
+                    "chart_trend": chart_trend,
                 },
                 related_links=related_links,
             )
