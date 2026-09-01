@@ -20,7 +20,55 @@
     </nav>
   </header>
 
+  {% macro render_card(item) %}
+  <article class="card" data-source="{{ item.source }}">
+    <div class="card-body">
+      <div class="card-top">
+        <span class="badge">{{ item.source_label }}</span>
+        <span class="date">{{ item.published_at|time_ago }}</span>
+      </div>
+      <h2><a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a></h2>
+
+      {% if item.metrics.change_pct is defined %}
+      {% set change = item.metrics.change_pct %}
+      <div class="price-row">
+        <span class="price">{{ '{:,.1f}'.format(item.metrics.close) }}</span>
+        <span class="change {{ 'up' if change >= 0 else 'down' }}">
+          {{ '▲' if change >= 0 else '▼' }} {{ '%+.2f'|format(change) }}%
+        </span>
+      </div>
+      {% endif %}
+
+      {% if item.summary %}
+      <p class="summary">{{ item.summary }}</p>
+      {% endif %}
+
+      {% if item.related_links %}
+      <details class="related">
+        <summary>情報源 ({{ item.related_links|length }})</summary>
+        <ul>
+          {% for link in item.related_links %}
+          <li><a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </details>
+      {% endif %}
+    </div>
+  </article>
+  {% endmacro %}
+
   <main>
+    {% if indicator_items %}
+    <section class="indicators">
+      <h2 class="section-title">経済指標</h2>
+      <div class="indicator-row">
+        {% for item in indicator_items %}
+        {{ render_card(item) }}
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
     {% if hero %}
     <a class="hero" href="{{ hero.url }}" target="_blank" rel="noopener" data-source="{{ hero.source }}">
       {% if hero.image_url %}
@@ -39,40 +87,7 @@
 
     <div class="grid">
       {% for item in items %}
-      <article class="card" data-source="{{ item.source }}">
-        <div class="card-body">
-          <div class="card-top">
-            <span class="badge">{{ item.source_label }}</span>
-            <span class="date">{{ item.published_at|time_ago }}</span>
-          </div>
-          <h2><a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a></h2>
-
-          {% if item.metrics.change_pct is defined %}
-          {% set change = item.metrics.change_pct %}
-          <div class="price-row">
-            <span class="price">{{ '{:,.1f}'.format(item.metrics.close) }}</span>
-            <span class="change {{ 'up' if change >= 0 else 'down' }}">
-              {{ '▲' if change >= 0 else '▼' }} {{ '%+.2f'|format(change) }}%
-            </span>
-          </div>
-          {% endif %}
-
-          {% if item.summary %}
-          <p class="summary">{{ item.summary }}</p>
-          {% endif %}
-
-          {% if item.related_links %}
-          <details class="related">
-            <summary>情報源 ({{ item.related_links|length }})</summary>
-            <ul>
-              {% for link in item.related_links %}
-              <li><a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.title }}</a></li>
-              {% endfor %}
-            </ul>
-          </details>
-          {% endif %}
-        </div>
-      </article>
+      {{ render_card(item) }}
       {% endfor %}
     </div>
   </main>

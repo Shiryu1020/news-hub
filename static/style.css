@@ -115,6 +115,24 @@ main {
   padding: 20px;
 }
 
+.section-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  margin: 0 0 10px;
+}
+
+.indicators {
+  margin-bottom: 28px;
+}
+
+.indicator-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
 .hero {
   display: block;
   position: relative;

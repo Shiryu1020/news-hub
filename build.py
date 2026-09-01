@@ -46,9 +46,12 @@ def main() -> None:
         encoding="utf-8",
     )
 
-    # 表示順: 画像つきの最新記事をヒーローに、残りをグリッドへ
-    hero = next((i for i in items if i.image_url), items[0] if items else None)
-    grid_items = [i for i in items if i is not hero]
+    # 経済指標(株価)は常に最上段にまとめて表示。それ以外は新しい順(キャッチアップ優先度の目安)。
+    indicator_items = [i for i in items if i.source == "stock"]
+    other_items = [i for i in items if i.source != "stock"]
+
+    hero = next((i for i in other_items if i.image_url), other_items[0] if other_items else None)
+    grid_items = [i for i in other_items if i is not hero]
 
     categories = []
     seen = set()
@@ -61,6 +64,7 @@ def main() -> None:
     env.filters["time_ago"] = time_ago
     template = env.get_template("index.html.j2")
     html = template.render(
+        indicator_items=indicator_items,
         hero=hero,
         items=grid_items,
         categories=categories,
