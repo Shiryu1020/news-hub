@@ -22,15 +22,16 @@ sources:
   # カテゴリ(label)は「トピック」軸で統一する。発行元(HBR/McKinsey等)は
   # カテゴリを分けず、feeds の name として記事ごとに表示する(MECEを保つため)。
 
+  # HBR / Project Syndicate / Foreign Affairs は有料会員制(全文が読めない)ため未採用。
+  # ここに登録するのは無料で全文読める(会員登録不要 or 無料登録のみ)ソースに限定する。
+
   biz_strategy:
     enabled: true
     module: sources.rss
     label: "経営・戦略"
     icon: "💼"
-    limit_per_feed: 5
+    limit_per_feed: 8
     feeds:
-      - url: http://feeds.hbr.org/harvardbusiness
-        name: "Harvard Business Review"
       - url: https://www.mckinsey.com/insights/rss
         name: "McKinsey Insights"
 
@@ -39,12 +40,12 @@ sources:
     module: sources.rss
     label: "地政学・マクロ経済"
     icon: "🌍"
-    limit_per_feed: 5
+    limit_per_feed: 8
     feeds:
-      - url: https://www.project-syndicate.org/rss
-        name: "Project Syndicate"
-      - url: https://www.foreignaffairs.com/rss.xml
-        name: "Foreign Affairs"
+      - url: https://www.aljazeera.com/xml/rss/all.xml
+        name: "Al Jazeera"
+      - url: https://cepr.org/rss/vox-content
+        name: "VoxEU (CEPR)"
 
   jp_business:
     enabled: true
