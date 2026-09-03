@@ -293,6 +293,13 @@ main {
   font-size: 0.76rem;
 }
 
+.publisher {
+  margin: -4px 0 8px;
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
 .price-row {
   display: flex;
   align-items: baseline;

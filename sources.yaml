@@ -19,6 +19,9 @@ sources:
         label: "S&P500"
         news_query: "S&P500 株価"
 
+  # カテゴリ(label)は「トピック」軸で統一する。発行元(HBR/McKinsey等)は
+  # カテゴリを分けず、feeds の name として記事ごとに表示する(MECEを保つため)。
+
   biz_strategy:
     enabled: true
     module: sources.rss
@@ -26,8 +29,10 @@ sources:
     icon: "💼"
     limit_per_feed: 5
     feeds:
-      - http://feeds.hbr.org/harvardbusiness           # Harvard Business Review
-      - https://www.mckinsey.com/insights/rss           # McKinsey Insights
+      - url: http://feeds.hbr.org/harvardbusiness
+        name: "Harvard Business Review"
+      - url: https://www.mckinsey.com/insights/rss
+        name: "McKinsey Insights"
 
   macro_geopolitics:
     enabled: true
@@ -36,17 +41,20 @@ sources:
     icon: "🌍"
     limit_per_feed: 5
     feeds:
-      - https://www.project-syndicate.org/rss           # Project Syndicate
-      - https://www.foreignaffairs.com/rss.xml           # Foreign Affairs
+      - url: https://www.project-syndicate.org/rss
+        name: "Project Syndicate"
+      - url: https://www.foreignaffairs.com/rss.xml
+        name: "Foreign Affairs"
 
   jp_business:
     enabled: true
     module: sources.rss
-    label: "日本語ビジネスニュース"
+    label: "国内ビジネス"
     icon: "🗞️"
     limit_per_feed: 6
     feeds:
-      - http://toyokeizai.net/list/feed/rss              # 東洋経済オンライン
+      - url: http://toyokeizai.net/list/feed/rss
+        name: "東洋経済オンライン"
 
   # 例: 追加予定のソース(未実装)
   # police:

@@ -1,7 +1,8 @@
 """汎用RSSソース。
 
 sources.yaml に feeds(RSS URLのリスト)を指定するだけで、新しいカテゴリを追加できる。
-label をあわせて指定すると、そのカテゴリ名でタブ表示される。
+label はカテゴリ名(トピック軸)。feeds の各項目に name を指定すると、
+記事ごとに発行元(publisher)として表示される(カテゴリ自体はまとめたまま)。
 
 例:
     biz_strategy:
@@ -9,7 +10,10 @@ label をあわせて指定すると、そのカテゴリ名でタブ表示さ�
       module: sources.rss
       label: "経営・戦略"
       feeds:
-        - http://feeds.hbr.org/harvardbusiness
+        - url: http://feeds.hbr.org/harvardbusiness
+          name: "Harvard Business Review"
+        - url: https://www.mckinsey.com/insights/rss
+          name: "McKinsey Insights"
 """
 from __future__ import annotations
 
@@ -59,8 +63,16 @@ def _extract_image(entry) -> str | None:
 def fetch(config: dict) -> list[Item]:
     limit_per_feed = config.get("limit_per_feed", 5)
     items: list[Item] = []
-    for feed_url in config.get("feeds", []):
+    for feed_cfg in config.get("feeds", []):
+        # 文字列(URLのみ)でも、{url, name}形式でも受け付ける
+        if isinstance(feed_cfg, str):
+            feed_url, publisher_name = feed_cfg, None
+        else:
+            feed_url, publisher_name = feed_cfg["url"], feed_cfg.get("name")
+
         feed = feedparser.parse(feed_url)
+        publisher = publisher_name or feed.feed.get("title", "")
+
         for entry in feed.entries[:limit_per_feed]:
             items.append(
                 Item(
@@ -70,6 +82,7 @@ def fetch(config: dict) -> list[Item]:
                     published_at=_parse_published(entry),
                     summary=_clean_summary(entry),
                     image_url=_extract_image(entry),
+                    publisher=publisher,
                 )
             )
     return items

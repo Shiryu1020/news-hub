@@ -39,6 +39,9 @@
         <span class="date">{{ item.published_at|time_ago }}</span>
       </div>
       <h2><a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a></h2>
+      {% if item.publisher %}
+      <p class="publisher">{{ item.publisher }}</p>
+      {% endif %}
 
       {% if item.metrics.change_pct is defined %}
       {% set change = item.metrics.change_pct %}
@@ -95,6 +98,9 @@
       <div class="hero-body">
         <span class="badge">{{ hero.icon }} {{ hero.source_label }}</span>
         <h2>{{ hero.title }}</h2>
+        {% if hero.publisher %}
+        <p class="publisher">{{ hero.publisher }}</p>
+        {% endif %}
         {% if hero.summary %}
         <p class="hero-summary">{{ hero.summary[:140] }}{{ '…' if hero.summary|length > 140 else '' }}</p>
         {% endif %}
