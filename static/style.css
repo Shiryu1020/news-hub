@@ -206,6 +206,16 @@ main {
   font-size: 0.92rem;
 }
 
+.hero-insight {
+  margin: 0 0 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--fg);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
 /* ---------- Grid / Cards ---------- */
 
 .grid {
@@ -326,6 +336,16 @@ main {
   margin: 0 0 6px;
   font-size: 0.88rem;
   color: var(--muted);
+}
+
+.insight {
+  margin: 0 0 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--fg);
+  font-size: 0.85rem;
+  line-height: 1.5;
 }
 
 .related {

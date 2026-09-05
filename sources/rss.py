@@ -23,6 +23,7 @@ from datetime import datetime, timezone
 
 import feedparser
 
+from .ai_summary import generate_insight
 from .base import Item
 
 _TAG_RE = re.compile(r"<[^>]+>")
@@ -62,6 +63,7 @@ def _extract_image(entry) -> str | None:
 
 def fetch(config: dict) -> list[Item]:
     limit_per_feed = config.get("limit_per_feed", 5)
+    category_label = config.get("label", "")
     items: list[Item] = []
     for feed_cfg in config.get("feeds", []):
         # 文字列(URLのみ)でも、{url, name}形式でも受け付ける
@@ -74,13 +76,16 @@ def fetch(config: dict) -> list[Item]:
         publisher = publisher_name or feed.feed.get("title", "")
 
         for entry in feed.entries[:limit_per_feed]:
+            title = entry.get("title", "(無題)")
+            summary = _clean_summary(entry)
             items.append(
                 Item(
                     source="",  # base.fetch_all が source / source_label を設定する
-                    title=entry.get("title", "(無題)"),
+                    title=title,
                     url=entry.get("link", ""),
                     published_at=_parse_published(entry),
-                    summary=_clean_summary(entry),
+                    summary=summary,
+                    insight=generate_insight(title, summary, category_label) or "",
                     image_url=_extract_image(entry),
                     publisher=publisher,
                 )

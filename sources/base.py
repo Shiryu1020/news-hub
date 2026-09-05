@@ -26,6 +26,7 @@ class Item:
     url: str
     published_at: datetime
     summary: str = ""
+    insight: str = ""               # AIが生成する「この記事から何が言えるか」の示唆(何が起きたかの要約とは別軸)
     image_url: str | None = None
     metrics: dict[str, Any] = field(default_factory=dict)       # 定量データ (例: {"price": 2700, "change_pct": -1.8})
     related_links: list[RelatedLink] = field(default_factory=list)  # 定性的な補足情報(関連ニュース見出し等)
@@ -43,6 +44,7 @@ class Item:
             "url": self.url,
             "published_at": self.published_at.isoformat(),
             "summary": self.summary,
+            "insight": self.insight,
             "image_url": self.image_url,
             "metrics": self.metrics,
             "related_links": [vars(l) for l in self.related_links],

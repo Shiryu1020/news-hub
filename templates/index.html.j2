@@ -64,6 +64,10 @@
       <p class="summary">{{ item.summary }}</p>
       {% endif %}
 
+      {% if item.insight %}
+      <p class="insight">💡 {{ item.insight }}</p>
+      {% endif %}
+
       {% if item.related_links %}
       <details class="related">
         <summary>情報源 ({{ item.related_links|length }})</summary>
@@ -103,6 +107,9 @@
         {% endif %}
         {% if hero.summary %}
         <p class="hero-summary">{{ hero.summary[:140] }}{{ '…' if hero.summary|length > 140 else '' }}</p>
+        {% endif %}
+        {% if hero.insight %}
+        <p class="hero-insight">💡 {{ hero.insight }}</p>
         {% endif %}
         <p class="date">{{ hero.published_at|time_ago }}</p>
       </div>
